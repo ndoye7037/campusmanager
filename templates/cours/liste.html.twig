@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Mes cours</h1>
+
+<ul>
+    {% for c in cours %}
+        <li>
+            <strong>{{ c.titre }}</strong> — {{ c.statut }}
+            <div class="description">
+                {{ c.description|raw }}
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
