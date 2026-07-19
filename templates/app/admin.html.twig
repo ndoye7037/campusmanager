@@ -1,0 +1,383 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --ink: #1B2A4A;
+        --ink-soft: #33394A;
+        --parchment: #F7F5EF;
+        --paper: #FFFFFF;
+        --gold: #B8863B;
+        --line: #E2DED2;
+        --success: #3F7859;
+        --success-bg: #E7F0EA;
+        --danger: #B23A48;
+        --danger-bg: #F7E9EA;
+        --admin-accent: #6B3F69;
+        --admin-accent-bg: #F1E7F0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        background: var(--parchment);
+        color: var(--ink-soft);
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .entete {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 22px 40px;
+        background: var(--ink);
+        color: var(--parchment);
+    }
+
+    .marque { display: flex; align-items: center; gap: 12px; }
+
+    .sceau {
+        width: 34px; height: 34px;
+        border: 1.5px solid var(--admin-accent);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Fraunces', serif;
+        font-weight: 600; font-size: 15px;
+        color: #D9B6D6;
+        flex-shrink: 0;
+    }
+
+    .marque h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 20px; margin: 0; }
+    .marque span {
+        display: block;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+        color: #D9B6D6;
+        margin-top: 2px;
+    }
+
+    .session-info { display: flex; align-items: center; gap: 16px; font-size: 14px; }
+    .session-info strong { color: #D9B6D6; font-weight: 600; }
+
+    .lien-discret {
+        background: none;
+        border: 1px solid rgba(247,245,239,0.3);
+        color: var(--parchment);
+        padding: 7px 14px;
+        border-radius: 6px;
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        cursor: pointer;
+    }
+    .lien-discret:hover { background: rgba(247,245,239,0.1); border-color: var(--admin-accent); }
+
+    .conteneur { max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    .entete-section { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; }
+    .entete-section h2 { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: var(--ink); margin: 0; }
+    .compteur { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--admin-accent); }
+
+    .panneau { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 28px; margin-bottom: 40px; }
+
+    .grille-champs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    label {
+        display: block; font-size: 12px; font-weight: 600; text-transform: uppercase;
+        letter-spacing: 0.05em; color: var(--ink-soft); margin-bottom: 6px; opacity: 0.7;
+    }
+
+    input[type=email], input[type=password], input[type=text], select {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        background: var(--parchment);
+        color: var(--ink);
+        margin-bottom: 20px;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--admin-accent); background: var(--paper); }
+
+    .bouton {
+        display: inline-block;
+        background: var(--ink);
+        color: var(--parchment);
+        border: none;
+        padding: 12px 22px;
+        border-radius: 6px;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px; font-weight: 600;
+        cursor: pointer;
+    }
+    .bouton:hover { background: #263A63; }
+    .bouton-secondaire { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+    .bouton-secondaire:hover { border-color: var(--admin-accent); background: var(--admin-accent-bg); }
+
+    table { width: 100%; border-collapse: collapse; }
+    th {
+        text-align: left;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+        color: var(--ink-soft); opacity: 0.6;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+    }
+    td { padding: 12px; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+
+    .badge-role {
+        display: inline-block;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.04em;
+        padding: 3px 9px; border-radius: 20px; margin-right: 4px;
+    }
+    .badge-role.admin { background: var(--admin-accent-bg); color: var(--admin-accent); }
+    .badge-role.user { background: var(--success-bg); color: var(--success); }
+
+    .actions-ligne { display: flex; gap: 14px; }
+    .lien-action { background: none; border: none; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; }
+    .lien-action.modifier { color: var(--ink); }
+    .lien-action.supprimer { color: var(--danger); }
+    .lien-action:hover { text-decoration: underline; }
+
+    .ligne-edition td { background: var(--admin-accent-bg); }
+
+    .etat-vide { text-align: center; padding: 30px; color: var(--ink-soft); opacity: 0.55; font-size: 14px; }
+    .message-erreur {
+        background: var(--danger-bg); color: var(--danger);
+        border-radius: 6px; padding: 10px 14px; font-size: 13px;
+        margin-top: 16px; display: none;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<header class="entete">
+    <div class="marque">
+        <div class="sceau">CM</div>
+        <div>
+            <h1>CampusManager</h1>
+            <span>Console administrateur</span>
+        </div>
+    </div>
+    <div class="session-info">
+        <span>Connecte : <strong id="email-connecte"></strong></span>
+        <a href="/" style="color: var(--parchment); font-size: 13px;">Vue etudiant</a>
+        <button class="lien-discret" onclick="seDeconnecter()">Se deconnecter</button>
+    </div>
+</header>
+
+<div class="conteneur">
+
+    <section class="panneau">
+        <div class="entete-section"><h2>Creer un utilisateur</h2></div>
+        <div class="grille-champs">
+            <div>
+                <label for="nouvel-email">Email</label>
+                <input type="email" id="nouvel-email">
+            </div>
+            <div>
+                <label for="nouveau-nom">Nom complet</label>
+                <input type="text" id="nouveau-nom">
+            </div>
+            <div>
+                <label for="nouveau-mdp">Mot de passe</label>
+                <input type="password" id="nouveau-mdp">
+            </div>
+            <div>
+                <label for="nouveau-role">Role</label>
+                <select id="nouveau-role">
+                    <option value="ROLE_USER">Etudiant</option>
+                    <option value="ROLE_ADMIN">Administrateur</option>
+                </select>
+            </div>
+        </div>
+        <button class="bouton" onclick="creerUtilisateur()">Creer</button>
+        <div class="message-erreur" id="message-creation"></div>
+    </section>
+
+    <section>
+        <div class="entete-section">
+            <h2>Utilisateurs</h2>
+            <span class="compteur" id="compteur-utilisateurs"></span>
+        </div>
+        <div class="panneau" style="padding: 0; overflow: hidden;">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Email</th><th>Nom</th><th>Roles</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="corps-table-utilisateurs"></tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+<script>
+function seDeconnecter() {
+    localStorage.removeItem('jwt_token');
+    localStorage.removeItem('email_connecte');
+    localStorage.removeItem('roles_connecte');
+    window.location.href = '/';
+}
+
+(function verifierAcces() {
+    const token = localStorage.getItem('jwt_token');
+    const roles = JSON.parse(localStorage.getItem('roles_connecte') || '[]');
+    if (!token || !roles.includes('ROLE_ADMIN')) {
+        window.location.href = '/';
+    } else {
+        document.getElementById('email-connecte').textContent = localStorage.getItem('email_connecte');
+    }
+})();
+
+function enTeteAuth() {
+    return { 'Authorization': 'Bearer ' + localStorage.getItem('jwt_token') };
+}
+
+function creerLigneUtilisateur(u) {
+    const ligne = document.createElement('tr');
+
+    const tdId = document.createElement('td');
+    tdId.textContent = '#' + u.id;
+
+    const tdEmail = document.createElement('td');
+    tdEmail.textContent = u.email;
+
+    const tdNom = document.createElement('td');
+    tdNom.textContent = u.nomComplet || '—';
+
+    const tdRoles = document.createElement('td');
+    u.roles.forEach(r => {
+        const badge = document.createElement('span');
+        badge.className = 'badge-role ' + (r === 'ROLE_ADMIN' ? 'admin' : 'user');
+        badge.textContent = r.replace('ROLE_', '');
+        tdRoles.appendChild(badge);
+    });
+
+    const tdActions = document.createElement('td');
+    const conteneurActions = document.createElement('div');
+    conteneurActions.className = 'actions-ligne';
+    conteneurActions.innerHTML = `
+        <button class="lien-action modifier" onclick="basculerEdition(${u.id})">Modifier</button>
+        <button class="lien-action supprimer" onclick="supprimerUtilisateur(${u.id})">Supprimer</button>
+    `;
+    tdActions.appendChild(conteneurActions);
+
+    ligne.appendChild(tdId);
+    ligne.appendChild(tdEmail);
+    ligne.appendChild(tdNom);
+    ligne.appendChild(tdRoles);
+    ligne.appendChild(tdActions);
+
+    return ligne;
+}
+
+function creerLigneEdition(u) {
+    const ligne = document.createElement('tr');
+    ligne.className = 'ligne-edition';
+    ligne.id = 'edition-' + u.id;
+    ligne.style.display = 'none';
+
+    const estAdmin = u.roles.includes('ROLE_ADMIN');
+
+    const td = document.createElement('td');
+    td.colSpan = 5;
+    td.innerHTML = `
+        <label>Role</label>
+        <select id="role-${u.id}">
+            <option value="ROLE_USER" ${!estAdmin ? 'selected' : ''}>Etudiant</option>
+            <option value="ROLE_ADMIN" ${estAdmin ? 'selected' : ''}>Administrateur</option>
+        </select>
+        <button class="bouton bouton-secondaire" style="margin-top:10px;" onclick="enregistrerRole(${u.id})">Enregistrer</button>
+    `;
+
+    ligne.appendChild(td);
+    return ligne;
+}
+
+function chargerUtilisateurs() {
+    fetch('/api/utilisateurs', { headers: enTeteAuth() })
+        .then(r => r.json())
+        .then(utilisateurs => {
+            const corps = document.getElementById('corps-table-utilisateurs');
+            document.getElementById('compteur-utilisateurs').textContent = utilisateurs.length + ' compte(s)';
+
+            corps.innerHTML = '';
+
+            if (utilisateurs.length === 0) {
+                const ligneVide = document.createElement('tr');
+                const td = document.createElement('td');
+                td.colSpan = 5;
+                td.className = 'etat-vide';
+                td.textContent = 'Aucun utilisateur.';
+                ligneVide.appendChild(td);
+                corps.appendChild(ligneVide);
+                return;
+            }
+
+            utilisateurs.forEach(u => {
+                corps.appendChild(creerLigneUtilisateur(u));
+                corps.appendChild(creerLigneEdition(u));
+            });
+        });
+}
+
+function basculerEdition(id) {
+    const ligne = document.getElementById('edition-' + id);
+    ligne.style.display = ligne.style.display === 'none' ? 'table-row' : 'none';
+}
+
+function enregistrerRole(id) {
+    const role = document.getElementById('role-' + id).value;
+
+    fetch('/api/utilisateurs/' + id, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...enTeteAuth() },
+        body: JSON.stringify({ roles: [role] })
+    })
+    .then(() => chargerUtilisateurs());
+}
+
+function creerUtilisateur() {
+    const email = document.getElementById('nouvel-email').value;
+    const nomComplet = document.getElementById('nouveau-nom').value;
+    const motDePasse = document.getElementById('nouveau-mdp').value;
+    const role = document.getElementById('nouveau-role').value;
+    const messageErreur = document.getElementById('message-creation');
+    messageErreur.style.display = 'none';
+
+    if (!email || !motDePasse) return;
+
+    fetch('/api/utilisateurs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...enTeteAuth() },
+        body: JSON.stringify({ email, nomComplet, motDePasse, roles: [role] })
+    })
+    .then(r => r.json().then(data => ({ statut: r.status, data })))
+    .then(({ statut, data }) => {
+        if (statut >= 400) {
+            messageErreur.textContent = data.error || 'Erreur lors de la creation.';
+            messageErreur.style.display = 'block';
+            return;
+        }
+        document.getElementById('nouvel-email').value = '';
+        document.getElementById('nouveau-nom').value = '';
+        document.getElementById('nouveau-mdp').value = '';
+        chargerUtilisateurs();
+    });
+}
+
+function supprimerUtilisateur(id) {
+    fetch('/api/utilisateurs/' + id, { method: 'DELETE', headers: enTeteAuth() })
+        .then(() => chargerUtilisateurs());
+}
+
+chargerUtilisateurs();
+</script>
+{% endblock %}
